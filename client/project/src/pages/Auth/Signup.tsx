@@ -1,15 +1,15 @@
-import { useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ShieldAlert } from "lucide-react"
+import { GoogleLogin } from "@react-oauth/google"
+import { useGoogleAuth } from "@/hooks/useGoogleAuth"
+import {
+    Alert,
+    AlertDescription,
+    AlertTitle,
+} from "@/components/ui/alert"
 
 function Signup() {
-    useEffect(() => {
-        
-
-    }, [])
+    const { user, error, handleSuccess, handleError } = useGoogleAuth()
 
     return (
         <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col items-center justify-center p-4 relative font-sans selection:bg-red-500/30 selection:text-red-400">
@@ -25,7 +25,7 @@ function Signup() {
                 <p className="text-xs text-zinc-500 tracking-wider mt-1 uppercase">UPSC CDS Adaptive Exam Engine</p>
             </div>
 
-            <Card className="w-full max-w-md border-zinc-900 bg-zinc-900/40 backdrop-blur-md shadow-2xl relative z-10">
+            <CardContent className="">
                 <CardHeader className="space-y-2 text-center pb-6">
                     <CardTitle className="text-2xl font-black tracking-tight text-zinc-100">Create Your Account</CardTitle>
                     <CardDescription className="text-sm text-zinc-400">
@@ -37,57 +37,41 @@ function Signup() {
 
                     {/* 💥 THE OFFICIAL GOOGLE INJECTION CONTAINER */}
                     <div className="w-full flex justify-center min-h-11">
-                        <div id="googleButtonDiv" className="w-full max-w-full overflow-hidden rounded-md transition-all duration-200" />
+                        {
+                            !user ? <div>
+                                <GoogleLogin
+                                    onSuccess={handleSuccess}
+                                    onError={handleError}
+                                    theme="filled_black"
+                                    shape="rectangular"
+                                    size="large"
+                                    width="380px"
+                                    text="signup_with"
+                                    useOneTap={false}
+                                />
+                            </div> :
+                                <div>
+                                    <Alert>
+                                        <AlertTitle>Authentication Successfull</AlertTitle>
+                                        <AlertDescription>
+                                            You are successfully authenticated!!!
+                                        </AlertDescription>
+                                    </Alert>
+                                </div>
+                        }
+
+                        {
+                            error && <div>
+                                <AlertTitle>Error Occured</AlertTitle>
+                                <AlertDescription>
+                                    {error}
+                                </AlertDescription>
+                            </div>
+                        }
                     </div>
-
-                    {/* Clean Decorative Separator line */}
-                    <div className="relative flex items-center justify-center">
-                        <div className="absolute w-full border-t border-zinc-800" />
-                        <span className="relative bg-zinc-925 px-3 text-xs uppercase text-zinc-500 font-medium tracking-widest">
-                            Or prepare manually
-                        </span>
-                    </div>
-
-                    {/* Form Fields Interface */}
-                    <div className="space-y-4">
-                        <div className="space-y-1.5">
-                            <Label htmlFor="name" className="text-xs font-semibold text-zinc-400">Full Name</Label>
-                            <Input
-                                id="name"
-                                placeholder="Vikram Singh"
-                                type="text"
-                                className="bg-zinc-950 border-zinc-800 text-zinc-100 placeholder:text-zinc-600 focus-visible:ring-red-500 focus-visible:border-red-500"
-                            />
-                        </div>
-
-                        <div className="space-y-1.5">
-                            <Label htmlFor="email" className="text-xs font-semibold text-zinc-400">Email Address</Label>
-                            <Input
-                                id="email"
-                                placeholder="aspirant@gmail.com"
-                                type="email"
-                                className="bg-zinc-950 border-zinc-800 text-zinc-100 placeholder:text-zinc-600 focus-visible:ring-red-500 focus-visible:border-red-500"
-                            />
-                        </div>
-                    </div>
-
-
 
                 </CardContent>
-
-                <CardFooter className="flex flex-col space-y-4 pb-6">
-                    <Button className="w-full bg-zinc-100 hover:bg-zinc-200 text-zinc-950 font-bold transition-all duration-200">
-                        Create Free Account
-                    </Button>
-
-                    <p className="text-xs text-center text-zinc-500">
-                        Already have a checkpoint active?{" "}
-                        <button className="text-red-400 hover:underline font-medium">
-                            Log In
-                        </button>
-                    </p>
-                </CardFooter>
-            </Card>
+            </CardContent>
 
             {/* Security notice footer segment */}
             <div className="mt-6 flex items-center space-x-2 text-xs text-zinc-600 z-10">
