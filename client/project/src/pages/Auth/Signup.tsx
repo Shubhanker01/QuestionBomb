@@ -2,14 +2,19 @@ import { CardContent, CardDescription, CardHeader, CardTitle } from "@/component
 import { ShieldAlert } from "lucide-react"
 import { GoogleLogin } from "@react-oauth/google"
 import { useGoogleAuth } from "@/hooks/useGoogleAuth"
-import {
-    Alert,
-    AlertDescription,
-    AlertTitle,
-} from "@/components/ui/alert"
+import { useEffect } from "react"
+import { useLoadingBarHook } from "@/hooks/useloadingBar"
 
 function Signup() {
-    const { user, error, handleSuccess, handleError } = useGoogleAuth()
+    const { start, complete } = useLoadingBarHook()
+    const { handleSuccess, handleError } = useGoogleAuth()
+    useEffect(() => {
+        start()
+        return () => {
+            complete()
+        }
+    }, [start, complete])
+
 
     return (
         <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col items-center justify-center p-4 relative font-sans selection:bg-red-500/30 selection:text-red-400">
@@ -37,37 +42,20 @@ function Signup() {
 
                     {/* 💥 THE OFFICIAL GOOGLE INJECTION CONTAINER */}
                     <div className="w-full flex justify-center min-h-11">
-                        {
-                            !user ? <div>
-                                <GoogleLogin
-                                    onSuccess={handleSuccess}
-                                    onError={handleError}
-                                    theme="filled_black"
-                                    shape="rectangular"
-                                    size="large"
-                                    width="380px"
-                                    text="signup_with"
-                                    useOneTap={false}
-                                />
-                            </div> :
-                                <div>
-                                    <Alert>
-                                        <AlertTitle>Authentication Successfull</AlertTitle>
-                                        <AlertDescription>
-                                            You are successfully authenticated!!!
-                                        </AlertDescription>
-                                    </Alert>
-                                </div>
-                        }
 
-                        {
-                            error && <div>
-                                <AlertTitle>Error Occured</AlertTitle>
-                                <AlertDescription>
-                                    {error}
-                                </AlertDescription>
-                            </div>
-                        }
+                        <div>
+                            <GoogleLogin
+                                onSuccess={handleSuccess}
+                                onError={handleError}
+                                theme="filled_black"
+                                shape="rectangular"
+                                size="large"
+                                width="380px"
+                                text="signup_with"
+                                useOneTap={false}
+                            />
+                        </div>
+
                     </div>
 
                 </CardContent>

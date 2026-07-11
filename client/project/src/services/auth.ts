@@ -7,5 +7,6 @@ export const authenticateUser = async (token: string) => {
     }
     catch (error) {
         console.log(error)
+        throw error
     }
 }

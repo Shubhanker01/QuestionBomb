@@ -39,9 +39,19 @@ const googleAuth = asyncHandler(async (req: Request, res: Response) => {
         user.tokenExpiredAt = exp
         await user.save()
     }
-    res.status(200).json({
+    const options = {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none" as const
+    }
+    res.status(200).cookie('user', JSON.stringify({
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar
+    }), options).json({
         message: "Authentication successfull!!!",
         user: {
+            _id: user._id,
             name: user.name,
             email: user.email,
             avatar: user.avatar
