@@ -1,14 +1,15 @@
 import { useGoogleOneTapLogin } from '@react-oauth/google';
 import type { CredentialResponse } from '@react-oauth/google'
 import { useState } from 'react';
-import type { GoogleUserProfile } from '@/types/auth'
 import { authenticateUser } from '@/services/auth'
 import { displayNotification } from '@/utils/displayNotification';
 import { useNavigate } from 'react-router-dom';
+import { useProvider } from '@/provider/userProvider';
 
 export const useGoogleAuth = () => {
+    const { setUser }: any = useProvider()
     const navigate = useNavigate()
-    const [user, setUser] = useState<GoogleUserProfile | null>(null)
+
     const [error, setError] = useState<string | null>(null)
     const handleSuccess = async (credentialResponse: CredentialResponse) => {
         if (credentialResponse.credential) {
@@ -17,6 +18,7 @@ export const useGoogleAuth = () => {
                 const json = res?.data
                 console.log(json)
                 setUser(json.user)
+                sessionStorage.setItem('user', JSON.stringify(json.user))
                 navigate(`/main-app/${json.user._id}`)
             } catch (error) {
                 setError("Failed to decode user!!!")
@@ -36,7 +38,7 @@ export const useGoogleAuth = () => {
         onError: handleError
     })
 
-    return { user, error, handleSuccess, handleError }
+    return { error, handleSuccess, handleError }
 }
 
 

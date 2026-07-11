@@ -1,4 +1,4 @@
-import React from 'react'
+
 import {
     Sidebar,
     SidebarContent,
@@ -14,11 +14,12 @@ import { Home, Atom, Stone, Bomb } from 'lucide-react'
 import { useSidebar } from "@/components/ui/sidebar"
 import { NavLink } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { useGoogleAuth } from '@/hooks/useGoogleAuth'
+import { useProvider } from "@/provider/userProvider"
 
 function AppSidebar({ userId }: any) {
+    const { user }: any = useProvider()
     const { state } = useSidebar()
-    const { user } = useGoogleAuth()
+
     const menuItems = [
         {
             title: "Home",
@@ -116,8 +117,8 @@ function AppSidebar({ userId }: any) {
                                 </Avatar>
                             </div>
                             <div className="justify-end ml-4">
-                                <h2>{user?.name}</h2>
-                                <p>{user?.email}</p>
+                                <h2 className="text-lg">{user?.name}</h2>
+                                <p className="text-sm">{user?.email}</p>
                             </div>
                         </div>
                     </SidebarFooter>
