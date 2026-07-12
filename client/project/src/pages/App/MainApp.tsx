@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import AppSidebar from '@/components/ui/Sidebar/AppSidebar'
 import { useParams } from 'react-router-dom'
