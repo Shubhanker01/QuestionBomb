@@ -1,8 +1,15 @@
 // creating a user model
-import { Schema, Types, model } from "mongoose";
+import { Model, Schema, Types, model } from "mongoose";
 import { IUser } from "../types/user.js";
+import jwt from "jsonwebtoken";
 
-const userSchema = new Schema<IUser>({
+interface IUserMethods {
+    generateAccessToken(): string,
+    generateRefreshToken(): string
+}
+
+type UserModel = Model<IUser, {}, IUserMethods>
+const userSchema = new Schema<IUser, UserModel, IUserMethods>({
     name: {
         type: String,
         required: true
@@ -27,7 +34,27 @@ const userSchema = new Schema<IUser>({
     },
     mocksAttempted: [
         { type: Schema.Types.ObjectId, ref: "mocks" }
-    ]
+    ],
+    refreshToken: {
+        type: String
+    }
 })
 
-export const User = model<IUser>("user", userSchema)
+userSchema.methods.generateAccessToken = function () {
+    return jwt.sign({
+        _id: this._id,
+        email: this.email
+    }, process.env.ACCESS_TOKEN as string, { expiresIn: process.env.ACCESS_TOKEN_EXPIRE as jwt.SignOptions['expiresIn'] })
+}
+
+userSchema.methods.generateRefreshToken = function () {
+    return jwt.sign({
+        _id: this._id,
+        email: this.email
+    }, process.env.REFRESH_TOKEN as string, {
+        expiresIn: process.env.REFRESH_TOKEN_EXPIRE as jwt.SignOptions['expiresIn']
+    })
+}
+
+
+export const User = model<IUser, UserModel>("user", userSchema)

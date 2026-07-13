@@ -10,3 +10,13 @@ export const authenticateUser = async (token: string) => {
         throw error
     }
 }
+
+export const logout = async () => {
+    try {
+        const response = await api.post('/auth/logout')
+        return response
+    } catch (error) {
+        console.log(error)
+        throw error
+    }
+}

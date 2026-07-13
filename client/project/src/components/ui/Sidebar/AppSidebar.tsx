@@ -1,4 +1,4 @@
-
+import { useState } from 'react'
 import {
     Sidebar,
     SidebarContent,
@@ -8,15 +8,19 @@ import {
     SidebarMenu,
     SidebarGroupContent,
     SidebarMenuItem,
-    SidebarMenuButton
+    SidebarMenuButton,
 } from "@/components/ui/sidebar"
-import { Home, Atom, Stone, Bomb } from 'lucide-react'
+import { DropdownMenu, DropdownMenuItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuGroup } from "../dropdown-menu"
+import { Home, Atom, Stone, Bomb, ChevronDown, LogOutIcon } from 'lucide-react'
 import { useSidebar } from "@/components/ui/sidebar"
 import { NavLink } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useProvider } from "@/provider/userProvider"
+import { Button } from "../button"
+import LogoutDialog from "../Dialog box/LogoutDialog"
 
 function AppSidebar({ userId }: any) {
+    const [showLogoutDialog, setShowLogoutDialog] = useState(false)
     const { user }: any = useProvider()
     const { state } = useSidebar()
 
@@ -117,14 +121,33 @@ function AppSidebar({ userId }: any) {
                                 </Avatar>
                             </div>
                             <div className="justify-end ml-4">
-                                <h2 className="text-lg">{user?.name}</h2>
-                                <p className="text-sm">{user?.email}</p>
+                                <h2 className="text-sm">{user?.name}</h2>
                             </div>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger>
+                                    <Button className="p-2 ml-2" variant="ghost" size="sm">
+                                        <ChevronDown />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <DropdownMenuGroup>
+                                        <DropdownMenuItem onSelect={() => setShowLogoutDialog(true)}>
+                                            <LogOutIcon className="mr-2 h-4 w-4" />
+                                            <span>Log out</span>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuGroup>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
+
                     </SidebarFooter>
                 </SidebarContent>
 
             </Sidebar>
+            <LogoutDialog
+                open={showLogoutDialog}
+                onOpenChange={setShowLogoutDialog}
+            />
         </div>
     )
 }

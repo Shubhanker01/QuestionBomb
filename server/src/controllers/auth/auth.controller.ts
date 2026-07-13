@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import { User } from '../../models/user.model.js';
 import { asyncHandler } from '../../utils/asyncHandler.js';
+import type { AuthenticatedUser } from '../../types/user.js';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
@@ -37,26 +38,49 @@ const googleAuth = asyncHandler(async (req: Request, res: Response) => {
     else {
         user.tokenIssuedAt = iat
         user.tokenExpiredAt = exp
-        await user.save()
     }
     const options = {
         httpOnly: true,
         secure: true,
         sameSite: "none" as const
     }
-    res.status(200).cookie('user', JSON.stringify({
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar
-    }), options).json({
-        message: "Authentication successfull!!!",
-        user: {
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            avatar: user.avatar
-        }
-    })
+    const accessToken = user.generateAccessToken()
+    const refreshToken = user.generateRefreshToken()
+    user.refreshToken = refreshToken
+    await user.save()
+    res.status(200).cookie('accessToken', accessToken, options).cookie('refreshToken', refreshToken, options)
+        .json({
+            message: "Authentication successfull!!!",
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                avatar: user.avatar
+            }
+        })
 })
 
-export { googleAuth }
+// logout
+const logoutUser = asyncHandler(async (req: AuthenticatedUser, res: Response) => {
+    if (!req.user) {
+        res.status(400).json({ message: "Some error occured!!!" })
+        return
+    }
+    await User.findByIdAndUpdate(req.user._id, {
+        $set: {
+            refreshToken: null,
+            tokenIssuedAt: 0,
+            tokenExpiredAt: 0
+        }
+    }, {
+        new: true
+    })
+    const options = {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none" as const
+    }
+    return res.status(200).clearCookie("accessToken", options).clearCookie("refreshToken", options).json({ message: "You are logged out successfully!!!" })
+})
+
+export { googleAuth, logoutUser }
