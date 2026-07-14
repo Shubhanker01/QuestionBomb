@@ -22,6 +22,18 @@ const mockSchema = new Schema<IMock>({
     difficultyLevel: {
         type: String,
         required: true
+    },
+    section: {
+        type: String,
+        required: true
+    },
+    subsection: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
     }
 })
 

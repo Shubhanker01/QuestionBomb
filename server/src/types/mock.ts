@@ -3,5 +3,8 @@ export interface IMock {
     noOfQuestions: number,
     subjectId: number,
     duration: number,
-    difficultyLevel: string
+    difficultyLevel: string,
+    section: string,
+    subsection: string,
+    description: string
 }

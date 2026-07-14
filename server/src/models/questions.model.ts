@@ -30,4 +30,6 @@ const questionSchema = new Schema<IQuestion>({
     }
 })
 
+questionSchema.index({ mockId: 1, section: 1 })
+
 export const Question = model<IQuestion>("question", questionSchema)

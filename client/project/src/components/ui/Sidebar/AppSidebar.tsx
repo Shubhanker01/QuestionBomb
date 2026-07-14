@@ -16,7 +16,6 @@ import { useSidebar } from "@/components/ui/sidebar"
 import { NavLink } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useProvider } from "@/provider/userProvider"
-import { Button } from "../button"
 import LogoutDialog from "../Dialog box/LogoutDialog"
 
 function AppSidebar({ userId }: any) {
@@ -125,9 +124,7 @@ function AppSidebar({ userId }: any) {
                             </div>
                             <DropdownMenu>
                                 <DropdownMenuTrigger>
-                                    <Button className="p-2 ml-2" variant="ghost" size="sm">
-                                        <ChevronDown />
-                                    </Button>
+                                    <ChevronDown />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
                                     <DropdownMenuGroup>
