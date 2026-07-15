@@ -1,4 +1,4 @@
-import { Response, Request } from "express";
+import { Response, Request, RequestHandler } from "express";
 import { Question } from "../../models/questions.model.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
@@ -18,5 +18,6 @@ const fetchQuestions = asyncHandler(async (req: Request, res: Response) => {
     }
     res.status(200).json({ message: "Questions fetched successfully", questions, count: questions.length })
 })
+
 
 export { fetchQuestions }

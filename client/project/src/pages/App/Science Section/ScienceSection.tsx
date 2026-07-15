@@ -24,7 +24,7 @@ export default function ScienceSection() {
 
     const filteredMocks = selectedCategory === "All"
         ? mocks
-        : mocks.filter((m) => m.section === selectedCategory);
+        : mocks.filter((m) => m.section === selectedCategory.toLowerCase());
 
     return (
         <section className="w-full max-w-7xl mx-auto px-4 py-4">

@@ -8,3 +8,13 @@ export interface IMock {
     subsection: string,
     description: string
 }
+
+export interface UserAnswers {
+    userAnswers: Record<number, number>
+}
+
+export interface QuestionWithIndex {
+    index: number,
+    _id: string,
+    correctAnswer: number
+}

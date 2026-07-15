@@ -5,6 +5,7 @@ import { Routes, Route } from "react-router-dom"
 import MainApp from "@/pages/App/MainApp"
 import ScienceSection from "@/pages/App/Science Section/ScienceSection"
 import GeographySection from "@/pages/App/Geography Section/GeographySection"
+import MockInterface from "@/pages/App/MockTest Interface/MockInterface"
 
 function AppRouter() {
     return (
@@ -16,6 +17,7 @@ function AppRouter() {
                 <Route path="science" element={<ScienceSection />} />
                 <Route path="geography" element={<GeographySection />} />
             </Route>
+            <Route path="/mock/:subject/:mockId/user/:userId" element={<MockInterface />}></Route>
         </Routes>
     )
 }

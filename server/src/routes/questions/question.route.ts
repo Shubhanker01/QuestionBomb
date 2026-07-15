@@ -4,4 +4,5 @@ import { fetchQuestions } from '../../controllers/questions/question.controller.
 const router = Router()
 router.route("/:section/:mockId").get(fetchQuestions)
 
+
 export default router

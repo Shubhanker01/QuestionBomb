@@ -10,10 +10,13 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ArrowRight } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom"
 
-export default function StartTestDialog() {
+export default function StartTestDialog({ section, mockId }: any) {
+    const { userId } = useParams()
+    const navigate = useNavigate()
     const handleNavigate = () => {
-
+        navigate(`/mock/${section}/${mockId}/user/${userId}`)
     }
     return (
         <AlertDialog>
