@@ -5,6 +5,7 @@ import authRouter from './routes/auth/auth.route.js'
 import mockRouter from './routes/mocks/mock.route.js'
 import questionRouter from './routes/questions/question.route.js'
 const app: Express = express();
+app.set('trust proxy', 1)
 
 app.use(cors({
     origin: ["http://localhost:5173", process.env.CLIENT_URL as string],

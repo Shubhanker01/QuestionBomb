@@ -1,3 +1,5 @@
+import type { Dispatch, SetStateAction } from "react";
+
 export interface ScienceMock {
     _id: string;
     mockTitle: string;
@@ -8,4 +10,9 @@ export interface ScienceMock {
     difficultyLevel: "Easy" | "Medium" | "Hard";
     description: string;
     icon: React.ComponentType<{ className?: string }>;
+}
+
+export interface SubmitContextType {
+    isSubmitting: boolean,
+    setIsSubmitting: Dispatch<SetStateAction<boolean>>
 }

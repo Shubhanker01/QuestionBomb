@@ -8,7 +8,13 @@ export interface IUser {
     tokenExpiredAt: number,
     avatar: string,
     isPaidUser: boolean,
-    mocksAttempted: Types.ObjectId[],
+    mocksAttempted:
+    {
+        mockId: Types.ObjectId,
+        status: "progress" | "completed",
+        score: number
+    }[]
+    ,
     refreshToken: string
 }
 

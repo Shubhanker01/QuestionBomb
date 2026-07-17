@@ -36,7 +36,7 @@ function QuestionCard({ setSelectedAnswers, setMarkedForReview, currentQuestion,
                             <Badge variant="secondary" className="text-xs font-medium">
                                 Multiple Choice Question
                             </Badge>
-                            {/* <Button
+                            <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={toggleMarkForReview}
@@ -45,7 +45,7 @@ function QuestionCard({ setSelectedAnswers, setMarkedForReview, currentQuestion,
                             >
                                 <Bookmark className="w-4 h-4" />
                                 {markedForReview[currentQuestion.index] ? "Marked" : "Mark for Review"}
-                            </Button> */}
+                            </Button>
                         </div>
                         <CardTitle className="text-base md:text-lg font-medium leading-relaxed">
                             Q{currentIdx + 1}. {currentQuestion.questionTitle}

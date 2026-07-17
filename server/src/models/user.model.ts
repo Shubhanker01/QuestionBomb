@@ -33,7 +33,11 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>({
         default: false
     },
     mocksAttempted: [
-        { type: Schema.Types.ObjectId, ref: "mocks" }
+        {
+            mockId: Types.ObjectId,
+            status: String,
+            score: Number
+        }
     ],
     refreshToken: {
         type: String
