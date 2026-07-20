@@ -15,7 +15,7 @@ function Timer({ timeLeft, setTimeLeft, onSubmitError, selectedAnswers }: any) {
             if (json) {
                 sessionStorage.removeItem('mock_progress')
                 sessionStorage.removeItem('questions')
-                navigate(`/test-score/mock/${mockId}/user/${userId}`, { state: { score: json.score } })
+                navigate(`/test-score/mock/${mockId}/user/${userId}`, { state: { score: json.score, noOfCorrectQuestion: json.noOfCorrectQuestion, noOfIncorrectQuestion: json.noOfIncorrectQuestion, noOfUnattemptedQuestion: json.noOfUnattemptedQuestion } })
             }
             else {
                 toast.error("Some error occured while calculating score!!!")

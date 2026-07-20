@@ -33,6 +33,7 @@ export const submitMock = asyncHandler(async (req: Request, res: Response) => {
         let score = 0
         let noOfCorrectQuestion = 0
         let noOfIncorrectQuestion = 0
+        let noOfUnattemptedQuestion = 0
         for (let key of Object.keys(userAnswers)) {
             if (userAnswers[key] == answerKeys[key]) {
                 score += 0.83
@@ -43,6 +44,7 @@ export const submitMock = asyncHandler(async (req: Request, res: Response) => {
                 noOfIncorrectQuestion++
             }
         }
+        noOfUnattemptedQuestion = questions.length - noOfCorrectQuestion - noOfIncorrectQuestion
         // update user mocks given
         const user = await User.findById(userId)
         if (!user) {
@@ -56,7 +58,7 @@ export const submitMock = asyncHandler(async (req: Request, res: Response) => {
             score: score
         })
         await user.save()
-        res.status(200).json({ score: score, noOfCorrectQuestion, noOfIncorrectQuestion })
+        res.status(200).json({ score: score, noOfCorrectQuestion, noOfIncorrectQuestion, noOfUnattemptedQuestion })
     } catch (error) {
         console.log(error)
     }

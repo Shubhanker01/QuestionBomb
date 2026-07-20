@@ -11,7 +11,7 @@ const fetchQuestions = asyncHandler(async (req: Request, res: Response) => {
     const questions = await Question.find({
         mockId: mockId,
         section: section
-    }).select("-correctAnswer")
+    }).select("-correctAnswer -explanation")
     if (!questions) {
         res.status(404).json({ message: "No questions found regarding particular mock" })
         return

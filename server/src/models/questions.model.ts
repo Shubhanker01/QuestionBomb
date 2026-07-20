@@ -27,6 +27,9 @@ const questionSchema = new Schema<IQuestion>({
         type: Number,
         ref: "mocks",
         required: true
+    },
+    explanation: {
+        type: String
     }
 })
 

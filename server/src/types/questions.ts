@@ -5,5 +5,6 @@ export interface IQuestion {
     correctAnswer: number,
     mockId: Types.ObjectId,
     section: string,
-    subjectId: number
+    subjectId: number,
+    explanation:string
 }

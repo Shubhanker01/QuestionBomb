@@ -22,7 +22,8 @@
     "express": "^5.2.1",
     "google-auth-library": "^10.9.0",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.7.4"
+    "mongoose": "^9.7.4",
+    "razorpay": "^2.9.8"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",
