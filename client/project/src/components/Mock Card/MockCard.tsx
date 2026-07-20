@@ -52,7 +52,7 @@ export default function MockCard({ mock }: any) {
 
                 {/* Action Footer */}
                 <CardFooter className="pt-3">
-                    <StartTestDialog section={mock.section} mockId={mock._id} />
+                    <StartTestDialog mock={mock} />
                 </CardFooter>
 
             </Card>

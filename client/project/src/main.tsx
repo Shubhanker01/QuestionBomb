@@ -5,15 +5,17 @@ import App from './App.tsx'
 import { BrowserRouter } from "react-router-dom"
 import { GoogleOAuthProvider } from "@react-oauth/google"
 import UserProvider from './provider/userProvider.tsx'
+import MockProvider from './provider/mockProvider.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <UserProvider>
-          <App />
+          <MockProvider>
+            <App />
+          </MockProvider>
         </UserProvider>
-
       </GoogleOAuthProvider>
     </BrowserRouter>
   </StrictMode>,

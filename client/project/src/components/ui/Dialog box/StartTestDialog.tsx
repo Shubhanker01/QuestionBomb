@@ -11,12 +11,21 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ArrowRight } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom"
+import { useMockContext } from "@/provider/mockProvider";
+import { mockSubject } from "@/utils/mockSubject";
 
-export default function StartTestDialog({ section, mockId }: any) {
+export default function StartTestDialog({ mock }: any) {
     const { userId } = useParams()
+    const { setmockInfo }: any = useMockContext()
     const navigate = useNavigate()
     const handleNavigate = () => {
-        navigate(`/mock/${section}/${mockId}/user/${userId}`)
+        setmockInfo({
+            mockTitle: mock.mockTitle,
+            subject: mockSubject(mock.subjectId),
+            section: mock.section,
+            subsection: mock.subsection
+        })
+        navigate(`/mock/${mock.section}/${mock._id}/user/${userId}`)
     }
     return (
         <AlertDialog>

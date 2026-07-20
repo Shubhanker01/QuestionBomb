@@ -8,9 +8,13 @@ import {
     XCircle,
     AlertCircle,
     Zap,
-    RotateCcw
+    RotateCcw,
+    Loader2,
+    Sparkles
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
+import { useAIAnalysis } from "@/hooks/useAIAnalysis";
+import { useMockContext } from "@/provider/mockProvider";
 
 // Mock Data Types
 interface LeaderboardUser {
@@ -30,7 +34,8 @@ const LEADERBOARD_DATA: LeaderboardUser[] = [
 ];
 
 function TestScore() {
-    const { userId } = useParams()
+    const { userId, mockId } = useParams()
+    const { mockInfo }: any = useMockContext()
     const location = useLocation()
     const result = location.state
     // Pie chart geometry values
@@ -38,6 +43,14 @@ function TestScore() {
     const radius = 50;
     const circumference = 2 * Math.PI * radius;
     const strokeDashoffset = circumference - (accuracyPercentage / 100) * circumference;
+    const { analysisText, loading } = useAIAnalysis({
+        subject: mockInfo.subject,
+        totalScore: result.score,
+        maxMarks: (result.noOfIncorrectQuestion + result.noOfIncorrectQuestion + result.noOfUnattemptedQuestion) * 0.83,
+        accuracy: accuracyPercentage,
+        section: mockInfo.section,
+        subsection: mockInfo.subsection
+    }, mockId)
     return (
         <>
             <div className="min-h-screen w-full bg-background p-4 md:p-8 space-y-6 max-w-7xl mx-auto">
@@ -213,6 +226,27 @@ function TestScore() {
                         </CardContent>
                     </Card>
                 </div>
+
+                <Card className="border-primary/30 bg-primary/[0.02] shadow-sm">
+                    <CardHeader>
+                        <div className="flex items-center gap-2 text-primary">
+                            <Sparkles className="w-5 h-5" />
+                            <CardTitle className="text-base font-semibold">AI Mentor Post-Mock Analysis</CardTitle>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        {loading ? (
+                            <div className="flex items-center gap-3 py-6 text-muted-foreground text-sm">
+                                <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                                Analyzing your response patterns and preparing personalized tips...
+                            </div>
+                        ) : (
+                            <div className="prose prose-sm dark:prose-invert max-w-none text-foreground whitespace-pre-line leading-relaxed">
+                                {analysisText}
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
             </div>
         </>
 

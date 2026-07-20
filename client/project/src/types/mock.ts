@@ -16,3 +16,15 @@ export interface SubmitContextType {
     isSubmitting: boolean,
     setIsSubmitting: Dispatch<SetStateAction<boolean>>
 }
+
+export interface MockType {
+    mockTitle: string,
+    subject: "Science" | "Geography" | "Polity",
+    section: string,
+    subsection: string
+}
+
+export interface MockContextType {
+    mockInfo: MockType | null,
+    setmockInfo: Dispatch<SetStateAction<MockType|null>>
+}
