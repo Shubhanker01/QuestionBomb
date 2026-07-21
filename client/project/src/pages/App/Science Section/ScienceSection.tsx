@@ -15,6 +15,7 @@ export default function ScienceSection() {
             const res = await showScienceMocks()
             const json = res?.data
             setMocks(json.mocks)
+            console.log(json.mocks)
         }
         getScienceMocks()
     }, [])

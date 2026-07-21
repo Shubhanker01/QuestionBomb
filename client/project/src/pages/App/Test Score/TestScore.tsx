@@ -1,20 +1,16 @@
 import { useLocation } from "react-router-dom"
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import {
-    Trophy,
-    CheckCircle2,
-    XCircle,
-    AlertCircle,
-    Zap,
-    RotateCcw,
-    Loader2,
-    Sparkles
+    Trophy
 } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useAIAnalysis } from "@/hooks/useAIAnalysis";
 import { useMockContext } from "@/provider/mockProvider";
+import type { Params } from "react-router-dom";
+import TestScoreHeader from "@/components/Header/TestScoreHeader";
+import VisualChart from "@/components/Visual Chart/VisualChart";
+import AIAnalysis from "@/components/Analysis/AIAnalysis";
+import Breakdown from "@/components/Breakdown/Breakdown";
 
 // Mock Data Types
 interface LeaderboardUser {
@@ -34,7 +30,7 @@ const LEADERBOARD_DATA: LeaderboardUser[] = [
 ];
 
 function TestScore() {
-    const { userId, mockId } = useParams()
+    const { userId, mockId }: Readonly<Params<string>> = useParams()
     const { mockInfo }: any = useMockContext()
     const location = useLocation()
     const result = location.state
@@ -44,32 +40,20 @@ function TestScore() {
     const circumference = 2 * Math.PI * radius;
     const strokeDashoffset = circumference - (accuracyPercentage / 100) * circumference;
     const { analysisText, loading } = useAIAnalysis({
+        userId,
+        mockId,
         subject: mockInfo.subject,
         totalScore: result.score,
         maxMarks: (result.noOfIncorrectQuestion + result.noOfIncorrectQuestion + result.noOfUnattemptedQuestion) * 0.83,
         accuracy: accuracyPercentage,
         section: mockInfo.section,
         subsection: mockInfo.subsection
-    }, mockId)
+    })
     return (
         <>
             <div className="min-h-screen w-full bg-background p-4 md:p-8 space-y-6 max-w-7xl mx-auto">
                 {/* Top Header Section */}
-                <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-sm">
-                    <div>
-                        <Badge className="bg-primary/10 text-primary hover:bg-primary/15 mb-2 font-medium" variant="secondary">
-                            Exam Submission Successful
-                        </Badge>
-                        <h1 className="text-2xl font-bold tracking-tight text-foreground">Science Sectional Mock - 01 Results</h1>
-                        <p className="text-sm text-muted-foreground mt-0.5">Performance Analytics Overview</p>
-                    </div>
-                    <Link to={`/main-app/${userId}`}
-                        className="flex items-center gap-2 text-sm font-semibold bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2.5 rounded-xl border border-border/80 transition-all shadow-sm"
-                    >
-                        <RotateCcw className="w-4 h-4" />
-                        Back to Dashboard
-                    </Link>
-                </header>
+                <TestScoreHeader />
 
                 {/* Main Container Layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -120,133 +104,16 @@ function TestScore() {
                     </Card>
 
                     {/* ================= RIGHT COLUMN: VISUAL CHART ================= */}
-                    <Card className="lg:col-span-7 flex flex-col justify-between border-border/70 shadow-sm">
-                        <CardHeader className="pb-2">
-                            <div className="flex items-center gap-2.5">
-                                <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                                    <Zap className="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <CardTitle className="text-base font-semibold">Accuracy Assessment</CardTitle>
-                                    <CardDescription className="text-xs">Ratio of correct answers against total questions attempted</CardDescription>
-                                </div>
-                            </div>
-                        </CardHeader>
-                        <CardContent className="flex flex-col sm:flex-row items-center justify-center gap-8 py-6 flex-1">
-                            {/* SVG Circular Donut Progress Ring */}
-                            <div className="relative w-36 h-36 shrink-0">
-                                <svg className="w-full h-full transform -rotate-90 shadow-sm rounded-full" viewBox="0 0 120 120">
-                                    <circle
-                                        cx="60"
-                                        cy="60"
-                                        r={radius}
-                                        className="stroke-muted"
-                                        strokeWidth="10"
-                                        fill="transparent"
-                                    />
-                                    <circle
-                                        cx="60"
-                                        cy="60"
-                                        r={radius}
-                                        className="stroke-primary transition-all duration-1000 ease-out"
-                                        strokeWidth="10"
-                                        fill="transparent"
-                                        strokeDasharray={circumference}
-                                        strokeDashoffset={strokeDashoffset}
-                                        strokeLinecap="round"
-                                    />
-                                </svg>
-                                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                                    <span className="text-3xl font-mono font-extrabold text-foreground tracking-tight">{accuracyPercentage}%</span>
-                                    <span className="text-[10px] uppercase font-semibold tracking-wider text-muted-foreground mt-0.5">Accuracy</span>
-                                </div>
-                            </div>
-
-                            {/* Quick Insights Text panel */}
-                            <div className="space-y-4 max-w-xs text-center sm:text-left">
-                                <div>
-                                    <h3 className="text-sm font-semibold text-foreground">Performance Summary</h3>
-                                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                                        You scored higher than <span className="text-primary font-medium">74%</span> of modern candidates who took this sectional test this week.
-                                    </p>
-                                </div>
-                                <div className="flex items-center gap-4 justify-center sm:justify-start">
-                                    <div>
-                                        <p className="text-lg font-mono font-bold text-foreground">{result.score.toFixed(2)}</p>
-                                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Final Score</p>
-                                    </div>
-                                    <Separator orientation="vertical" className="h-8" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <VisualChart radius={radius} circumference={circumference} strokeDashOffset={strokeDashoffset} accuracyPercentage={accuracyPercentage} result={result} />
                 </div>
 
                 {/* ================= BOTTOM ROW: DETAILED ATTEMPT METRICS ================= */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {/* Correct Breakdown Card */}
-                    <Card className="border-emerald-500/20 bg-emerald-500/[0.02] shadow-sm">
-                        <CardContent className="pt-6 flex items-center justify-between">
-                            <div className="space-y-1">
-                                <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Correct Answers</p>
-                                <p className="text-3xl font-mono font-bold text-emerald-700 dark:text-emerald-500">{result.noOfCorrectQuestion}</p>
-                                <p className="text-[11px] text-muted-foreground font-medium">+{(result.noOfCorrectQuestion * 0.83).toFixed(2)} Marks Awarded</p>
-                            </div>
-                            <div className="p-3.5 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                                <CheckCircle2 className="w-6 h-6" />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Incorrect Breakdown Card */}
-                    <Card className="border-destructive/20 bg-destructive/[0.01] shadow-sm">
-                        <CardContent className="pt-6 flex items-center justify-between">
-                            <div className="space-y-1">
-                                <p className="text-xs font-semibold text-destructive uppercase tracking-wider">Incorrect Answers</p>
-                                <p className="text-3xl font-mono font-bold text-destructive">{result.noOfIncorrectQuestion}</p>
-                                <p className="text-[11px] text-muted-foreground font-medium">-{(result.noOfIncorrectQuestion * 0.27).toFixed(2)} Negative Marking</p>
-                            </div>
-                            <div className="p-3.5 rounded-2xl bg-destructive/10 text-destructive">
-                                <XCircle className="w-6 h-6" />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Not Attempted Breakdown Card */}
-                    <Card className="border-muted bg-muted/10 shadow-sm">
-                        <CardContent className="pt-6 flex items-center justify-between">
-                            <div className="space-y-1">
-                                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Not Attempted</p>
-                                <p className="text-3xl font-mono font-bold text-foreground">{result.noOfUnattemptedQuestion}</p>
-                                <p className="text-[11px] text-muted-foreground font-medium">No impact on grading status</p>
-                            </div>
-                            <div className="p-3.5 rounded-2xl bg-muted text-muted-foreground">
-                                <AlertCircle className="w-6 h-6" />
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <Breakdown result={result}/>
                 </div>
+                <AIAnalysis loading={loading} analysisText={analysisText} />
 
-                <Card className="border-primary/30 bg-primary/[0.02] shadow-sm">
-                    <CardHeader>
-                        <div className="flex items-center gap-2 text-primary">
-                            <Sparkles className="w-5 h-5" />
-                            <CardTitle className="text-base font-semibold">AI Mentor Post-Mock Analysis</CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        {loading ? (
-                            <div className="flex items-center gap-3 py-6 text-muted-foreground text-sm">
-                                <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                                Analyzing your response patterns and preparing personalized tips...
-                            </div>
-                        ) : (
-                            <div className="prose prose-sm dark:prose-invert max-w-none text-foreground whitespace-pre-line leading-relaxed">
-                                {analysisText}
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
             </div>
         </>
 

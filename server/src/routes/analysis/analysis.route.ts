@@ -3,6 +3,6 @@ import { generateAIAnalysis } from '../../controllers/AI analysis/analysis.js'
 
 const router = Router()
 
-router.route(`/:mockId`).post(generateAIAnalysis)
+router.route(`/:mockId/user/:userId`).post(generateAIAnalysis)
 
 export default router

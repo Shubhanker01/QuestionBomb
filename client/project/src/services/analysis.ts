@@ -8,10 +8,10 @@ export const getAIAnalysis = async (
         accuracy,
         section,
         subsection
-    }: any, mockId: any
+    }: any, mockId: any, userId: any
 ) => {
     try {
-        const res = await api.post(`/ai-analysis/${mockId}`, {
+        const res = await api.post(`/ai-analysis/${mockId}/user/${userId}`, {
             subject: subject,
             totalScore: totalScore,
             maxMarks: maxMarks,

@@ -9,6 +9,7 @@ import {
 import { HelpCircle, Clock } from "lucide-react";
 import { getDifficultyBadge } from "../Badges/getDifficultyBadge";
 import StartTestDialog from "../ui/Dialog box/StartTestDialog";
+import { Button } from "../ui/button";
 
 export default function MockCard({ mock }: any) {
     return (
@@ -52,7 +53,13 @@ export default function MockCard({ mock }: any) {
 
                 {/* Action Footer */}
                 <CardFooter className="pt-3">
-                    <StartTestDialog mock={mock} />
+                    {mock.isAttempted ? (
+                        <Button className="bg-secondary text-secondary-foreground">
+                            View Score and Solutions
+                        </Button>
+                    ) : (
+                        <StartTestDialog mock={mock} />
+                    )}
                 </CardFooter>
 
             </Card>

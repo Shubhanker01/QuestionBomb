@@ -5,18 +5,24 @@ import dotenv from 'dotenv'
 import { asyncHandler } from "../../utils/asyncHandler.js";
 dotenv.config()
 import { takePrompt } from "../../utils/prompt.js";
+import { TestSubmission } from "../../models/testsubmission.model.js";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
 
 const generateAIAnalysis = asyncHandler(async (req: Request, res: Response) => {
     try {
         const { subject, totalScore, maxMarks, accuracy, section, subsection, title } = req.body
+        const { userId, mockId } = req.params
         const prompt = takePrompt(subject, totalScore, maxMarks, accuracy, title, section, subsection)
 
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: prompt
         })
+        await TestSubmission.findOneAndUpdate({
+            mockId: mockId,
+            userId: userId
+        }, { analysis: response.text })
         res.status(200).json({
             success: true,
             analysis: response.text

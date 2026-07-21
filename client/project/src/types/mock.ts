@@ -9,6 +9,8 @@ export interface ScienceMock {
     duration: number;
     difficultyLevel: "Easy" | "Medium" | "Hard";
     description: string;
+    isAttempted: boolean,
+    userScore: number
     icon: React.ComponentType<{ className?: string }>;
 }
 
