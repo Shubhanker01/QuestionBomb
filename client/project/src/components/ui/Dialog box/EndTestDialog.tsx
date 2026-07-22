@@ -4,6 +4,7 @@ import { submitMock } from '@/services/mocks';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Loader2 } from 'lucide-react';
+import type { JSONResultResponseType } from '@/types/mock';
 
 function EndTestDialog({ open, onOpenChange, selectedAnswers }: any) {
     const navigate = useNavigate()
@@ -14,12 +15,21 @@ function EndTestDialog({ open, onOpenChange, selectedAnswers }: any) {
         setIsSubmitting(true)
         try {
             const res = await submitMock(mockId as string, userId as string, JSON.stringify(selectedAnswers))
-            const json = await res?.data
+            const json: JSONResultResponseType = await res?.data
             console.log(json)
             if (json) {
                 sessionStorage.removeItem('mock_progress')
                 sessionStorage.removeItem('questions')
-                navigate(`/test-score/mock/${mockId}/user/${userId}`, { state: { score: json.score, noOfCorrectQuestion: json.noOfCorrectQuestion, noOfIncorrectQuestion: json.noOfIncorrectQuestion, noOfUnattemptedQuestion: json.noOfUnattemptedQuestion } })
+                navigate(`/test-score/mock/${mockId}/user/${userId}`, {
+                    state: {
+                        score: json.score,
+                        noOfCorrectQuestion: json.noOfCorrectQuestion, noOfIncorrectQuestion: json.noOfIncorrectQuestion,
+                        noOfUnattemptedQuestion: json.noOfUnattemptedQuestion,
+                        rank: json.rank,
+                        totalParticipants: json.totalParticipants,
+                        percentile: json.percentile
+                    }
+                })
             }
             else {
                 toast.error("Error occured while calculating score!!!")

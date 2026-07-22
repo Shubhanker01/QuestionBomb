@@ -8,6 +8,14 @@ import { User } from '../../models/user.model.js';
 import { TestSubmission } from '../../models/testsubmission.model.js';
 import { AuthenticatedUser } from '../../types/user.js';
 import { Types } from 'mongoose';
+import { redis } from '../../db/connectToRedis.js';
+
+type PipelineResult = [
+    [Error | null, number],
+    [Error | null, number | null],
+    [Error, number]
+]
+
 
 export const showScienceMocks = asyncHandler(async (req: AuthenticatedUser, res: Response) => {
     const userId = req.user._id
@@ -146,8 +154,84 @@ export const submitMock = asyncHandler(async (req: Request, res: Response) => {
             userAnswers: userAnswers,
             analysis: ""
         })
-        res.status(200).json({ score: score, noOfCorrectQuestion, noOfIncorrectQuestion, noOfUnattemptedQuestion })
+
+        // get rank 
+        const leaderboardKey = `leaderboard:mock:${mockId}`
+        const maxTimestamp = 1893456000000; // Year 2030 in ms
+        const currentTimestamp = Date.now();
+        const tieBreaker = (maxTimestamp - currentTimestamp) / maxTimestamp;
+        const compositeScore = score + tieBreaker;
+
+        // creating redis pipeline
+        const pipeline = redis.pipeline()
+        pipeline.zadd(leaderboardKey, compositeScore, userId)
+        pipeline.zrevrank(leaderboardKey, userId)
+        pipeline.zcard(leaderboardKey)
+        const results = (await pipeline.exec()) as unknown as PipelineResult
+        console.log(results)
+        if (!results) {
+            res.status(500).json({ message: "Some internal server error occured!!!" })
+            return
+        }
+        // ranking
+        const zeroBasedRank = results[1][1]
+        const totalParticipants = results[2][1]
+        const actualRank = zeroBasedRank !== null ? zeroBasedRank + 1 : null
+        if (actualRank == null) {
+            res.status(500).json({ message: "Some internal server error occured!!!" })
+            return
+        }
+        const percentile = (((totalParticipants - actualRank) / totalParticipants) * 100).toFixed(1)
+        res.status(200).json({ score: score, noOfCorrectQuestion, noOfIncorrectQuestion, noOfUnattemptedQuestion, rank: actualRank, totalParticipants, percentile })
     } catch (error) {
         console.log(error)
+    }
+})
+
+// fetch leaderboard
+export const getLeaderboard = asyncHandler(async (req: Request, res: Response) => {
+    try {
+        const { mockId } = req.params
+        const leaderboardKey = `leaderboard:mock:${mockId}`
+        const rawResults = await redis.zrevrange(leaderboardKey, 0, 4, "WITHSCORES")
+        console.log(rawResults)
+        if (!rawResults || rawResults.length == 0) {
+            return res.status(200).json({
+                success: true,
+                leaderboard: []
+            })
+        }
+
+        const userIds: string[] = []
+        const scoreMap: Record<string, number> = {}
+        for (let i = 0; i < rawResults.length; i += 2) {
+            const uId = rawResults[i]
+            const score = Math.floor(parseFloat(rawResults[i + 1]))
+            userIds.push(uId)
+            scoreMap[uId] = score
+        }
+        const users = await User.find({ _id: { $in: userIds } }).select("name").lean()
+        const userMap = new Map(users.map((u) => [u._id.toString(), u]))
+        const leaderboard = userIds.map((id, index) => {
+            const userInfo = userMap.get(id)
+            return {
+                rank: index + 1,
+                userId: id,
+                name: userInfo?.name,
+                score: scoreMap[id]
+            }
+        })
+        return res.status(200).json({
+            success: true,
+            leaderboard
+        })
+
+    }
+    catch (err) {
+        console.log(err)
+        return res.status(500).json({
+            success: false,
+            message: "Failed to retrieve leaderboard"
+        })
     }
 })

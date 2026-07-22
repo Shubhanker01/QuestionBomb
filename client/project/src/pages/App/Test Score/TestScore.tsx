@@ -11,29 +11,49 @@ import TestScoreHeader from "@/components/Header/TestScoreHeader";
 import VisualChart from "@/components/Visual Chart/VisualChart";
 import AIAnalysis from "@/components/Analysis/AIAnalysis";
 import Breakdown from "@/components/Breakdown/Breakdown";
+import type { JSONResultResponseType } from "@/types/mock";
+import { useEffect, useState } from "react";
+import { getLeaderboard } from "@/services/mocks";
 
 // Mock Data Types
 interface LeaderboardUser {
+    userId: string
     rank: number;
     name: string;
     score: number;
-    accuracy: number;
-    isCurrentUser?: boolean;
 }
 
-const LEADERBOARD_DATA: LeaderboardUser[] = [
-    { rank: 1, name: "Aarav Sharma", score: 92.5, accuracy: 96 },
-    { rank: 2, name: "Priya Patel", score: 88.0, accuracy: 91 },
-    { rank: 3, name: "Rohan Das", score: 85.2, accuracy: 89 },
-    { rank: 4, name: "Ananya Iyer", score: 81.4, accuracy: 85 },
-    { rank: 12, name: "You (Your Progress)", score: 68.3, accuracy: 76, isCurrentUser: true },
-];
+// const LEADERBOARD_DATA: LeaderboardUser[] = [
+//     { rank: 1, name: "Aarav Sharma", score: 92.5, accuracy: 96 },
+//     { rank: 2, name: "Priya Patel", score: 88.0, accuracy: 91 },
+//     { rank: 3, name: "Rohan Das", score: 85.2, accuracy: 89 },
+//     { rank: 4, name: "Ananya Iyer", score: 81.4, accuracy: 85 },
+//     { rank: 12, name: "You (Your Progress)", score: 68.3, accuracy: 76, isCurrentUser: true },
+// ];
 
 function TestScore() {
     const { userId, mockId }: Readonly<Params<string>> = useParams()
+    const [leaderboard, setLeaderboard] = useState<LeaderboardUser[] | []>([])
+
+    useEffect(() => {
+        async function fetchLeaderboard() {
+            try {
+                const res = await getLeaderboard(mockId as string)
+                const json = await res?.data
+                if (json.success) {
+                    setLeaderboard(json.leaderboard)
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        fetchLeaderboard()
+    },[])
+
     const { mockInfo }: any = useMockContext()
     const location = useLocation()
-    const result = location.state
+    const result: JSONResultResponseType = location.state
+    console.log(result)
     // Pie chart geometry values
     const accuracyPercentage = Math.round((result.noOfCorrectQuestion / (result.noOfCorrectQuestion + result.noOfIncorrectQuestion)) * 100);
     const radius = 50;
@@ -72,10 +92,10 @@ function TestScore() {
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-2.5 flex-1 pt-1">
-                            {LEADERBOARD_DATA.map((user) => (
+                            {leaderboard.map((user) => (
                                 <div
                                     key={user.rank}
-                                    className={`flex items-center justify-between p-3.5 rounded-xl border transition-all ${user.isCurrentUser
+                                    className={`flex items-center justify-between p-3.5 rounded-xl border transition-all ${user.userId === userId
                                         ? "bg-primary/5 border-primary/40 shadow-sm ring-1 ring-primary/10"
                                         : "bg-muted/30 border-border/60 hover:bg-accent/40"
                                         }`}
@@ -88,10 +108,9 @@ function TestScore() {
                                             #{user.rank}
                                         </span>
                                         <div>
-                                            <p className={`text-sm font-medium ${user.isCurrentUser ? "text-primary font-semibold" : "text-foreground"}`}>
+                                            <p className={`text-sm font-medium ${user.userId === userId ? "text-primary font-semibold" : "text-foreground"}`}>
                                                 {user.name}
                                             </p>
-                                            <p className="text-[11px] text-muted-foreground mt-0.5">Accuracy: {user.accuracy}%</p>
                                         </div>
                                     </div>
                                     <div className="text-right">
@@ -110,7 +129,7 @@ function TestScore() {
                 {/* ================= BOTTOM ROW: DETAILED ATTEMPT METRICS ================= */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {/* Correct Breakdown Card */}
-                    <Breakdown result={result}/>
+                    <Breakdown result={result} />
                 </div>
                 <AIAnalysis loading={loading} analysisText={analysisText} />
 

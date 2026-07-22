@@ -3,7 +3,7 @@ import { CheckCircle2, XCircle, AlertCircle } from 'lucide-react'
 
 export default function Breakdown({ result }: any) {
     return (
-        <div>
+        <>
             <Card className="border-emerald-500/20 bg-emerald-500/[0.02] shadow-sm">
                 <CardContent className="pt-6 flex items-center justify-between">
                     <div className="space-y-1">
@@ -44,6 +44,6 @@ export default function Breakdown({ result }: any) {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </>
     )
 }

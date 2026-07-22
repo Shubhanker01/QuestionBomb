@@ -28,5 +28,15 @@ export interface MockType {
 
 export interface MockContextType {
     mockInfo: MockType | null,
-    setmockInfo: Dispatch<SetStateAction<MockType|null>>
+    setmockInfo: Dispatch<SetStateAction<MockType | null>>
+}
+
+export interface JSONResultResponseType {
+    score: number,
+    noOfCorrectQuestion: number,
+    noOfIncorrectQuestion: number,
+    noOfUnattemptedQuestion: number,
+    rank: number,
+    totalParticipants: number,
+    percentile: number
 }

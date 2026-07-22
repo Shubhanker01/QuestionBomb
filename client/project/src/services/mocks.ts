@@ -19,3 +19,12 @@ export const submitMock = async (mockId: string, userId: string, userAnswers: st
         console.log(error)
     }
 }
+
+export const getLeaderboard = async (mockId: string) => {
+    try {
+        const response = await api.get(`/mocks/${mockId}/leaderboard`)
+        return response
+    } catch (error) {
+        console.log(error)
+    }
+}
