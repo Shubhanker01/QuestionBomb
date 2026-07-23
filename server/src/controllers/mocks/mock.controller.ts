@@ -181,7 +181,7 @@ export const submitMock = asyncHandler(async (req: Request, res: Response) => {
             res.status(500).json({ message: "Some internal server error occured!!!" })
             return
         }
-        const percentile = (((totalParticipants - actualRank) / totalParticipants) * 100).toFixed(1)
+        const percentile = Number((((totalParticipants - actualRank) / totalParticipants) * 100).toFixed(1))
         res.status(200).json({ score: score, noOfCorrectQuestion, noOfIncorrectQuestion, noOfUnattemptedQuestion, rank: actualRank, totalParticipants, percentile })
     } catch (error) {
         console.log(error)

@@ -9,6 +9,8 @@ const MockInterface = lazy(() => import('@/pages/App/MockTest Interface/MockInte
 const ScienceSection = lazy(() => import('@/pages/App/Science Section/ScienceSection'))
 const GeographySection = lazy(() => import('@/pages/App/Geography Section/GeographySection'))
 const Payment = lazy(() => import("@/pages/App/Payment/Payment"))
+const TestReview = lazy(() => import("@/pages/App/Test Review/TestReview"))
+
 import { Loader2 } from "lucide-react"
 
 function AppRouter() {
@@ -25,15 +27,15 @@ function AppRouter() {
                 <Route path="/" element={<Home />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/main-app/:userId" element={<MainApp />}>
-                    <Route index element={<MainAppHome />} />
-                    <Route path="science" element={<ScienceSection />} />
+                    {/* <Route index element={<MainAppHome />} /> */}
+                    <Route index path="science" element={<ScienceSection />} />
                     <Route path="geography" element={<GeographySection />} />
                 </Route>
 
                 <Route path="/mock/:subject/:mockId/user/:userId" element={<MockInterface />}></Route>
                 <Route path="/test-score/mock/:mockId/user/:userId" element={<TestScore />}></Route>
                 <Route path="/payment" element={<Payment />}></Route>
-
+                <Route path="/review/:subject/:mockId/user/:userId" element={<TestReview />}></Route>
             </Routes>
         </>
 
