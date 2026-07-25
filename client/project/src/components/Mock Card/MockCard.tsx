@@ -8,13 +8,10 @@ import {
 } from "@/components/ui/card";
 import { HelpCircle, Clock } from "lucide-react";
 import { getDifficultyBadge } from "../Badges/getDifficultyBadge";
-import StartTestDialog from "../ui/Dialog box/StartTestDialog";
-import { Button } from "../ui/button";
-import { ArrowRight } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+// import { Button } from "../ui/button";
+import CardFooterButton from "../CardFooter Button/CardFooterButton";
 
 export default function MockCard({ mock }: any) {
-    const {userId} = useParams()
     return (
         <div key={mock._id}>
             <Card
@@ -56,22 +53,7 @@ export default function MockCard({ mock }: any) {
 
                 {/* Action Footer */}
                 <CardFooter className="pt-3">
-                    {mock.isAttempted ? (
-                        <Link className="w-full flex-row  bg-gray-900 text-slate-200 rounded-xl" to={`/review/${mock.section}/${mock._id}/user/${userId}`}>
-                            <div className="flex justify-between m-2">
-                                <div>
-                                    <span>
-                                        View Score and Solutions
-                                    </span>
-                                </div>
-                                <div>
-                                    <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
-                                </div>
-                            </div>
-                        </Link>
-                    ) : (
-                        <StartTestDialog mock={mock} />
-                    )}
+                    <CardFooterButton mock={mock} />
                 </CardFooter>
 
             </Card>

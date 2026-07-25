@@ -4,7 +4,8 @@ export interface GoogleUserProfile {
     _id: string,
     name: string,
     avatar: string,
-    email: string
+    email: string,
+    isPaid: boolean
 }
 
 export interface UserContextType {

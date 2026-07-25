@@ -3,6 +3,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { User } from '../../models/user.model.js';
 import { asyncHandler } from '../../utils/asyncHandler.js';
 import type { AuthenticatedUser } from '../../types/user.js';
+import { hashToken } from '../../utils/hashToken.js';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
@@ -46,7 +47,7 @@ const googleAuth = asyncHandler(async (req: Request, res: Response) => {
     }
     const accessToken = user.generateAccessToken()
     const refreshToken = user.generateRefreshToken()
-    user.refreshToken = refreshToken
+    user.refreshToken = hashToken(refreshToken)
     await user.save()
     res.status(200).cookie('accessToken', accessToken, options).cookie('refreshToken', refreshToken, options)
         .json({
@@ -55,7 +56,8 @@ const googleAuth = asyncHandler(async (req: Request, res: Response) => {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
-                avatar: user.avatar
+                avatar: user.avatar,
+                isPaid: user.isPaidUser
             }
         })
 })

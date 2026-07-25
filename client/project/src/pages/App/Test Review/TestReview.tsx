@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 
 // Shadcn UI primitives
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -88,10 +88,10 @@ export default function TestReview() {
     return q.userOptionIndex === q.correctOptionIndex ? 'correct' : 'incorrect';
   };
 
-  const filteredQuestions = mockQuestions.filter((q) => {
-    if (filter === 'all') return true;
-    return getStatus(q) === filter;
-  });
+  // const filteredQuestions = mockQuestions.filter((q) => {
+  //   if (filter === 'all') return true;
+  //   return getStatus(q) === filter;
+  // });
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans">

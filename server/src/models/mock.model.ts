@@ -34,6 +34,9 @@ const mockSchema = new Schema<IMock>({
     description: {
         type: String,
         required: true
+    },
+    isPaid: {
+        type: Boolean
     }
 })
 

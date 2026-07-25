@@ -10,7 +10,8 @@ export interface ScienceMock {
     difficultyLevel: "Easy" | "Medium" | "Hard";
     description: string;
     isAttempted: boolean,
-    userScore: number
+    userScore: number,
+    isPaid: boolean,
     icon: React.ComponentType<{ className?: string }>;
 }
 

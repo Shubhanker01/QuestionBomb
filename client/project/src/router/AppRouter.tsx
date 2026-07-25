@@ -1,7 +1,6 @@
 import { lazy, Suspense } from "react"
 import Home from "@/pages/Home/Home"
 import Signup from "@/pages/Auth/Signup"
-import MainAppHome from "@/pages/App/Home Page/Home"
 import { Routes, Route } from "react-router-dom"
 const MainApp = lazy(() => import('@/pages/App/MainApp'))
 const TestScore = lazy(() => import('@/pages/App/Test Score/TestScore'))

@@ -6,7 +6,8 @@ export interface IMock {
     difficultyLevel: string,
     section: string,
     subsection: string,
-    description: string
+    description: string,
+    isPaid: boolean
 }
 
 export interface UserAnswers {
