@@ -4,7 +4,10 @@ import type { MockType } from "@/types/mock";
 
 
 export default function MockProvider({ children }: any) {
-    const [mockInfo, setmockInfo] = useState<MockType | null>(null)
+    const [mockInfo, setmockInfo] = useState<MockType | null>(() => {
+        const storedMockInfo = sessionStorage.getItem('mock')
+        return storedMockInfo ? JSON.parse(storedMockInfo) : null
+    })
     return (
         <MockContext.Provider value={{ mockInfo, setmockInfo }}>
             {children}

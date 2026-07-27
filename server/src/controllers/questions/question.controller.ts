@@ -19,7 +19,7 @@ const fetchQuestions = asyncHandler(async (req: AuthenticatedUser, res: Response
     const user = await User.findById(userId)
     const mock = await Mock.findById(mockId)
     if (mock?.isPaid && !user?.isPaidUser) {
-        res.status(403).json({ message: "Forbidden" })
+        return res.status(403).json({ message: "Forbidden" })
     }
     const questions = await Question.find({
         mockId: String(mockId),
@@ -30,7 +30,8 @@ const fetchQuestions = asyncHandler(async (req: AuthenticatedUser, res: Response
         res.status(404).json({ message: "No questions found regarding particular mock" })
         return
     }
-    res.status(200).json({ message: "Questions fetched successfully", questions, count: questions.length })
+    console.log(questions)
+    return res.status(200).json({ message: "Questions fetched successfully", questions, count: questions.length })
 })
 
 

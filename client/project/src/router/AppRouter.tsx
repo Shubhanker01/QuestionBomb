@@ -34,7 +34,7 @@ function AppRouter() {
                 <Route path="/mock/:subject/:mockId/user/:userId" element={<MockInterface />}></Route>
                 <Route path="/test-score/mock/:mockId/user/:userId" element={<TestScore />}></Route>
                 <Route path="/payment" element={<Payment />}></Route>
-                <Route path="/review/:subject/:mockId/user/:userId" element={<TestReview />}></Route>
+                <Route path="/review/:section/:mockId/user/:userId" element={<TestReview />}></Route>
             </Routes>
         </>
 

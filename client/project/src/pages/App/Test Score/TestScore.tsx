@@ -23,14 +23,6 @@ interface LeaderboardUser {
     score: number;
 }
 
-// const LEADERBOARD_DATA: LeaderboardUser[] = [
-//     { rank: 1, name: "Aarav Sharma", score: 92.5, accuracy: 96 },
-//     { rank: 2, name: "Priya Patel", score: 88.0, accuracy: 91 },
-//     { rank: 3, name: "Rohan Das", score: 85.2, accuracy: 89 },
-//     { rank: 4, name: "Ananya Iyer", score: 81.4, accuracy: 85 },
-//     { rank: 12, name: "You (Your Progress)", score: 68.3, accuracy: 76, isCurrentUser: true },
-// ];
-
 function TestScore() {
     const { userId, mockId }: Readonly<Params<string>> = useParams()
     const [leaderboard, setLeaderboard] = useState<LeaderboardUser[] | []>([])
@@ -48,7 +40,7 @@ function TestScore() {
             }
         }
         fetchLeaderboard()
-    },[])
+    }, [])
 
     const { mockInfo }: any = useMockContext()
     const location = useLocation()

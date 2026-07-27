@@ -41,3 +41,16 @@ export interface JSONResultResponseType {
     totalParticipants: number,
     percentile: number
 }
+
+export interface QuestionReview {
+    _id: string;
+    questionNumber: number;
+    subject: string;
+    title: string;
+    options: object[];
+    correctAnswer: number;
+    userAnswer: number | null;
+    explanation: string;
+}
+
+export type FilterType = "all" | "incorrect" | "unattempted" | "correct"

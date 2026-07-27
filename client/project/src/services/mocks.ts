@@ -28,3 +28,12 @@ export const getLeaderboard = async (mockId: string) => {
         console.log(error)
     }
 }
+
+export const reviewMock = async (section: string, mockId: string) => {
+    try {
+        const response = await api.get(`/mocks/review/${section}/${mockId}`)
+        return response
+    } catch (error) {
+        console.log(error)
+    }
+}
