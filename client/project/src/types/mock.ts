@@ -24,7 +24,8 @@ export interface MockType {
     mockTitle: string,
     subject: "Science" | "Geography" | "Polity",
     section: string,
-    subsection: string
+    subsection: string,
+    duration: number
 }
 
 export interface MockContextType {

@@ -1,34 +1,22 @@
 import { useEffect } from 'react'
 import { Clock } from 'lucide-react';
-import { submitMock } from '@/services/mocks';
-import { useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
-
+// import { handleSubmit } from '@/handlers/handleMockSubmit';
+import { useHandleSubmit } from '@/hooks/useHandleSubmit';
+import { useParams } from 'react-router-dom';
 function Timer({ timeLeft, setTimeLeft, onSubmitError, selectedAnswers }: any) {
     const { mockId, userId } = useParams()
-    const navigate = useNavigate()
-    // const [submissionSpinner, setSubmissionSpinner] = useState(false)
-    const handleSubmit = async () => {
+    const { onSubmit }: any = useHandleSubmit(mockId as string, userId as string, selectedAnswers)
+    const onTimeUp = async () => {
         try {
-            const res = await submitMock(mockId as string, userId as string, JSON.stringify(selectedAnswers))
-            const json = res?.data
-            if (json) {
-                sessionStorage.removeItem('mock_progress')
-                sessionStorage.removeItem('questions')
-                navigate(`/test-score/mock/${mockId}/user/${userId}`, { state: { score: json.score, noOfCorrectQuestion: json.noOfCorrectQuestion, noOfIncorrectQuestion: json.noOfIncorrectQuestion, noOfUnattemptedQuestion: json.noOfUnattemptedQuestion } })
-            }
-            else {
-                toast.error("Some error occured while calculating score!!!")
-            }
-
+            await onSubmit()
         } catch (error) {
             console.log(error)
-            onSubmitError(true)
+            onSubmitError("Error occured while submitting mock")
         }
     }
     useEffect(() => {
         if (timeLeft <= 0) {
-            handleSubmit()
+            onTimeUp()
             return
         };
         const timer = setInterval(() => setTimeLeft((prev: any) => prev - 1), 1000
@@ -55,7 +43,6 @@ function Timer({ timeLeft, setTimeLeft, onSubmitError, selectedAnswers }: any) {
             <div className="text-3xl font-mono font-bold tracking-tight text-foreground">
                 {formatTime(timeLeft)}
             </div>
-            {/* <SubmissionSpinner submissionSpinner={submissionSpinner} setSubmissionSpinner={setSubmissionSpinner} /> */}
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Timer from "@/components/Timer/Timer";
 import Header from "@/components/Header/Header";
 import QuestionCard from "@/components/QuestionCard/QuestionCard";
@@ -6,76 +6,26 @@ import Footer from "@/components/Footer/Footer";
 import QuestionPalette from "@/components/Question Palette/QuestionPalette";
 import SubmitBtn from "@/components/SubmitBtn/SubmitBtn";
 import LegendStats from "@/components/Legend Stats/LegendStats";
-import { fetchQuestions } from "@/services/questions";
 import { useParams } from "react-router-dom";
-import type { Question } from "@/types/question";
 import SubmitProvider from "@/provider/submitProvider";
 import { Loader2 } from "lucide-react";
-// Sample Questions
+import { useMockInterface } from "@/hooks/useMockInterface";
 
 export default function MockInterface() {
     const { subject, mockId } = useParams()
     const [submitError, onSubmitError] = useState(false)
-    const [mock, setMock] = useState<Question[] | []>([])
-    const [currentIdx, setCurrentIdx] = useState(0);
-    const [timeLeft, setTimeLeft] = useState(780)
-    const progress = JSON.parse(sessionStorage.getItem('mock_progress') as string)
-    const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
-    const [markedForReview, setMarkedForReview] = useState<Record<number, boolean>>({});
-    const [currentQuestion, setCurrentQuestion] = useState<Question>({
-        index: 0,
-        _id: "",
-        questionTitle: "",
-        options: []
-    })
-
-    useEffect(() => {
-        const savedQuestions: Question[] = JSON.parse(sessionStorage.getItem('questions') as string)
-        if (!savedQuestions) {
-            async function getQuestions() {
-                const res = await fetchQuestions(subject as string, mockId as string)
-                const json = await res?.data
-                if (json.questions.length !== 0) {
-                    let arr: any = []
-                    json.questions.map((question: any, idx: number): any => {
-                        let obj = {
-                            index: idx + 1,
-                            _id: question._id,
-                            questionTitle: question.questionTitle,
-                            options: question.options
-                        }
-                        arr.push(obj)
-                    })
-                    // save questions to session storage
-                    sessionStorage.setItem('questions', JSON.stringify(arr))
-                    setMock(arr)
-                    setCurrentQuestion(arr[currentIdx])
-                }
-            }
-            getQuestions()
-        }
-        else {
-            setMock(savedQuestions)
-            setCurrentQuestion(savedQuestions[currentIdx])
-            setSelectedAnswers(progress.selectedAnswers)
-            setTimeLeft(progress.timeLeft)
-        }
-
-    }, [])
-
-    useEffect(() => {
-        if (mock.length > 0) {
-            setCurrentQuestion(mock[currentIdx])
-        }
-    }, [currentIdx])
-
-    useEffect(() => {
-        let progress = {
-            selectedAnswers: selectedAnswers,
-            timeLeft: timeLeft
-        }
-        sessionStorage.setItem('mock_progress', JSON.stringify(progress))
-    }, [selectedAnswers, timeLeft])
+    const {
+        mock,
+        currentIdx,
+        setCurrentIdx,
+        timeLeft,
+        setTimeLeft,
+        selectedAnswers,
+        setSelectedAnswers,
+        markedForReview,
+        setMarkedForReview,
+        currentQuestion
+    } = useMockInterface(subject as string, mockId as string)
 
     return (
         <SubmitProvider>

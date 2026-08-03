@@ -23,13 +23,15 @@ export default function StartTestDialog({ mock }: any) {
             mockTitle: mock.mockTitle,
             subject: mockSubject(mock.subjectId),
             section: mock.section,
-            subsection: mock.subsection
+            subsection: mock.subsection,
+            duration: mock.duration
         })
         sessionStorage.setItem('mock', JSON.stringify({
             mockTitle: mock.mockTitle,
             subject: mockSubject(mock.subjectId),
             section: mock.section,
-            subsection: mock.subsection
+            subsection: mock.subsection,
+            duration: mock.duration
         }))
         navigate(`/mock/${mock.section}/${mock._id}/user/${userId}`)
     }

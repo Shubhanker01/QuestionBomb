@@ -1,44 +1,21 @@
 import { AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogHeader, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog';
 import { useSubmitProvider } from '@/provider/submitProvider';
-import { submitMock } from '@/services/mocks';
-import { useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { Loader2 } from 'lucide-react';
-import type { JSONResultResponseType } from '@/types/mock';
+// import { handleSubmit } from '@/handlers/handleMockSubmit';
+import { useHandleSubmit } from '@/hooks/useHandleSubmit';
+import { useParams } from 'react-router-dom';
 
 function EndTestDialog({ open, onOpenChange, selectedAnswers }: any) {
-    const navigate = useNavigate()
-    const { userId, mockId } = useParams()
+    const { mockId, userId } = useParams()
+    const { onSubmit }: any = useHandleSubmit(mockId as string, userId as string, selectedAnswers)
     const { setIsSubmitting, isSubmitting }: any = useSubmitProvider()
-    const handleSubmit = async () => {
-        onOpenChange(true)
-        setIsSubmitting(true)
+    const submit = async () => {
         try {
-            const res = await submitMock(mockId as string, userId as string, JSON.stringify(selectedAnswers))
-            const json: JSONResultResponseType = await res?.data
-            console.log(json)
-            if (json) {
-                sessionStorage.removeItem('mock_progress')
-                sessionStorage.removeItem('questions')
-                navigate(`/test-score/mock/${mockId}/user/${userId}`, {
-                    state: {
-                        score: json.score,
-                        noOfCorrectQuestion: json.noOfCorrectQuestion, noOfIncorrectQuestion: json.noOfIncorrectQuestion,
-                        noOfUnattemptedQuestion: json.noOfUnattemptedQuestion,
-                        rank: json.rank,
-                        totalParticipants: json.totalParticipants,
-                        percentile: json.percentile
-                    }
-                })
-            }
-            else {
-                toast.error("Error occured while calculating score!!!")
-            }
+            await onSubmit()
         } catch (error) {
             console.log(error)
         }
         finally {
-            onOpenChange(false)
             setIsSubmitting(false)
         }
     }
@@ -56,7 +33,7 @@ function EndTestDialog({ open, onOpenChange, selectedAnswers }: any) {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel disabled={isSubmitting}>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleSubmit}>
+                        <AlertDialogAction onClick={submit}>
                             {isSubmitting ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
