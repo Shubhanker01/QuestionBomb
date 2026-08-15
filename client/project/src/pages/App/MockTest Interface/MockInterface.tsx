@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 import SubmitProvider from "@/provider/submitProvider";
 import { Loader2 } from "lucide-react";
 import { useMockInterface } from "@/hooks/useMockInterface";
+import { useMockSession } from "@/hooks/useMockSession";
 
 export default function MockInterface() {
     const { subject, mockId } = useParams()
@@ -26,7 +27,8 @@ export default function MockInterface() {
         setMarkedForReview,
         currentQuestion
     } = useMockInterface(subject as string, mockId as string)
-
+    const mockSession = useMockSession(mockId as string)
+    console.log(mockSession)
     return (
         <SubmitProvider>
             <div className="flex flex-col lg:flex-row h-screen w-full bg-background">

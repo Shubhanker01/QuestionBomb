@@ -7,6 +7,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google"
 import UserProvider from './provider/userProvider.tsx'
 import MockProvider from './provider/mockProvider.tsx'
 
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>

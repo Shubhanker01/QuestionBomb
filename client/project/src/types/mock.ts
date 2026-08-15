@@ -54,4 +54,11 @@ export interface QuestionReview {
     explanation: string;
 }
 
+export interface MockSessionStatus {
+    mockId: string,
+    status: "in_progress" | "completed",
+    startedAt: Date,
+    timeRemainingInSeconds: number,
+    userAnswers: object
+}
 export type FilterType = "all" | "incorrect" | "unattempted" | "correct"

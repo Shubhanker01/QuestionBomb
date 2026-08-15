@@ -11,7 +11,7 @@ export interface IUser {
     mocksAttempted:
     {
         mockId: Types.ObjectId,
-        status: "progress" | "completed",
+        status: "in_progress" | "completed",
         score: number
     }[]
     ,

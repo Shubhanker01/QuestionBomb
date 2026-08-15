@@ -37,7 +37,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>({
             mockId: Types.ObjectId,
             status: String,
             score: Number
-        }
+        },
     ],
     refreshToken: {
         type: String

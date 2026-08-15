@@ -7,6 +7,7 @@ import StartTestDialog from '../ui/Dialog box/StartTestDialog'
 function CardFooterButton({ mock }: any) {
     const { userId } = useParams()
     const { user }: any = useProvider()
+    console.log(mock)
     if (mock.isPaid) {
         if (mock.isPaid !== user.isPaid) {
             return <UnlockContentDialog />

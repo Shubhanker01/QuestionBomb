@@ -47,7 +47,8 @@ function TestScore() {
     const result: JSONResultResponseType = location.state
     console.log(result)
     // Pie chart geometry values
-    const accuracyPercentage = Math.round((result.noOfCorrectQuestion / (result.noOfCorrectQuestion + result.noOfIncorrectQuestion)) * 100);
+
+    const accuracyPercentage = (result.noOfCorrectQuestion + result.noOfIncorrectQuestion) !== 0 ? Math.round((result.noOfCorrectQuestion / (result.noOfCorrectQuestion + result.noOfIncorrectQuestion)) * 100) : 0;
     const radius = 50;
     const circumference = 2 * Math.PI * radius;
     const strokeDashoffset = circumference - (accuracyPercentage / 100) * circumference;

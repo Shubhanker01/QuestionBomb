@@ -37,3 +37,12 @@ export const reviewMock = async (section: string, mockId: string) => {
         console.log(error)
     }
 }
+
+export const getOrStartMockSession = async (mockId: string) => {
+    try {
+        const response = await api.get(`/mocks/start/${mockId}`)
+        return response
+    } catch (error) {
+        console.log(error)
+    }
+}

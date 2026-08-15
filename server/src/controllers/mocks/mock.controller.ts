@@ -7,8 +7,9 @@ import { Question } from '../../models/questions.model.js';
 import { User } from '../../models/user.model.js';
 import { TestSubmission } from '../../models/testsubmission.model.js';
 import { AuthenticatedUser } from '../../types/user.js';
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { redis } from '../../db/connectToRedis.js';
+import { MockProgress } from '../../models/mockprogress.model.js';
 
 type PipelineResult = [
     [Error | null, number],
@@ -86,6 +87,28 @@ export const showScienceMocks = asyncHandler(async (req: AuthenticatedUser, res:
                 }
             }
         },
+        // {
+        //     $addFields: {
+        //         mocksGiven: { $arrayElemAt: ["$userAttempt.mocksAttempted", 0] }
+        //     }
+        // },
+        // {
+        //     $addFields: {
+        //         inProgress: {
+        //             $filter: {
+        //                 input: "$mocksGiven",
+        //                 as: "mocksGiven",
+        //                 cond: {
+        //                     $and: [
+        //                         { $eq: ["$$mocksGiven.mockId", "_id"] },
+        //                         { $eq: ["$$mocksGiven.status", "in_progress"] }
+        //                     ]
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+
 
         // 4. Remove the raw user object array from final output
         {
@@ -95,10 +118,69 @@ export const showScienceMocks = asyncHandler(async (req: AuthenticatedUser, res:
         }
 
     ])
+    console.log(mocks)
     if (!mocks) {
         return res.status(404).json({ message: "Mocks not found!!!" })
     }
     return res.status(200).json({ message: "Mocks retreived successfully!!!", mocks })
+})
+
+export const getOrStartMockSession = asyncHandler(async (req: AuthenticatedUser, res: Response) => {
+    try {
+        const userId = req.user?._id?.toString()
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "Unauthorized Request" })
+        }
+        const { mockId } = req.params
+        if (!mockId || !mongoose.Types.ObjectId.isValid(mockId as string)) {
+            return res.status(400).json({ success: false, message: "Mock Id is required!!!" })
+        }
+        const mock = await Mock.findById(mockId)
+        if (!mock) {
+            return res.status(404).json({
+                success: false,
+                message: "Mock test not found!!!"
+            })
+        }
+        let session = await MockProgress.findOne({ userId, mockId })
+        if (session && session.status === 'completed') {
+            return res.status(400).json({
+                success: false,
+                message: "You have already completed this test",
+            })
+        }
+        if (!session) {
+            session = await MockProgress.create({
+                userId: userId,
+                mockId: String(mockId),
+                status: "in_progress",
+                startedAt: Date.now(),
+                userAnswers: {}
+            })
+            const user = await User.findById(userId)
+            user?.mocksAttempted.push({
+                mockId: new mongoose.Types.ObjectId(mockId as string),
+                status: "in_progress",
+                score: 0
+            })
+            await user?.save()
+        }
+        const totalDurationInSeconds = (mock.duration || 60) * 60;
+        const secondsElapsed = Math.floor((Date.now() - new Date(session?.startedAt).getTime()) / 1000);
+        const timeRemainingInSeconds = Math.max(0, totalDurationInSeconds - secondsElapsed);
+        return res.status(200).send({
+            success: true,
+            message: "Mock progress session created!!!",
+            mockId: mockId,
+            status: session.status,
+            startedAt: session.startedAt,
+            timeRemainingInSeconds,
+            userAnswers: session.userAnswers || {}
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: "Internal server error occured" })
+    }
 })
 
 export const submitMock = asyncHandler(async (req: Request, res: Response) => {
@@ -106,10 +188,10 @@ export const submitMock = asyncHandler(async (req: Request, res: Response) => {
         const { mockId, userId }: any = req.params
         let { userAnswers }: any = req.body
         userAnswers = JSON.parse(userAnswers)
-        if (isObjectEmpty(userAnswers)) {
-            res.status(200).json({ score: 0 })
-            return
-        }
+        // if (isObjectEmpty(userAnswers)) {
+        //     res.status(200).json({ score: 0 })
+        //     return
+        // }
         let questions = await Question.find({ mockId: mockId })
 
         let answerKeys: any = {}
@@ -138,12 +220,19 @@ export const submitMock = asyncHandler(async (req: Request, res: Response) => {
             res.status(404).json({ message: "User not found!!!" })
             return
         }
-        user?.mocksAttempted.push({
-            mockId: mockId,
-            status: "completed",
-            score: score
+        user.mocksAttempted = user.mocksAttempted.filter((mock) => {
+            if (mock.mockId === mockId && mock.status === 'in_progress') {
+                mock.status = "completed";
+                mock.score = score;
+            }
+            return mock;
         })
         await user.save()
+        // update mock progress
+        await MockProgress.findOneAndUpdate({ userId, mockId }, {
+            status: "completed",
+            userAnswers: userAnswers
+        })
         await TestSubmission.create({
             mockId: mockId,
             userId: userId,

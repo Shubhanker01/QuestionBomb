@@ -4,6 +4,7 @@ import { useMockContext } from '@/provider/mockProvider';
 import { fetchQuestions } from '@/services/questions';
 
 export function useMockInterface(subject: string, mockId: string) {
+    const [testActive, setTestActive] = useState(true)
     const { mockInfo }: any = useMockContext()
     const [mock, setMock] = useState<Question[] | []>([])
     const [currentIdx, setCurrentIdx] = useState(0);
@@ -39,6 +40,7 @@ export function useMockInterface(subject: string, mockId: string) {
                     sessionStorage.setItem('questions', JSON.stringify(arr))
                     setMock(arr)
                     setCurrentQuestion(arr[currentIdx])
+
                 }
             }
             getQuestions()
@@ -66,6 +68,20 @@ export function useMockInterface(subject: string, mockId: string) {
         sessionStorage.setItem('mock_progress', JSON.stringify(progress))
     }, [selectedAnswers, timeLeft])
 
+    // Prevent accidental refresh / tab close / browser back button
+    useEffect(() => {
+        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+            if (!testActive) return;
+            event.preventDefault();
+            event.returnValue = 'Are you sure you want to leave the site while attempting the mock';
+        }
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        }
+    }, [testActive])
+
+
     return {
         mock,
         setMock,
@@ -78,7 +94,8 @@ export function useMockInterface(subject: string, mockId: string) {
         markedForReview,
         setMarkedForReview,
         currentQuestion,
-        setCurrentQuestion
+        setCurrentQuestion,
+        setTestActive
     }
 
 }
