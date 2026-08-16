@@ -1,7 +1,7 @@
 
 function GeographySection() {
   return (
-    <div>This is Geography Section</div>
+    <div>Mocks will be added soon please wait!!!</div>
   )
 }
 
