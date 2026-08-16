@@ -32,7 +32,7 @@ export default function Home() {
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-red-500/10 rounded-full blur-[120px] pointer-events-none" />
 
                     <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-zinc-100 max-w-4xl mx-auto leading-[1.15]">
-                        Stop Scrolling Telegram Pools. <br />
+                        Get both Quality and Quantity <br />
                         <span className="text-transparent bg-clip-text bg-linear-to-r from-red-500 via-orange-500 to-amber-500">
                             Master the UPSC CDS Exam.
                         </span>
