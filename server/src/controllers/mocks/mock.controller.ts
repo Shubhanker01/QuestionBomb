@@ -118,7 +118,6 @@ export const showScienceMocks = asyncHandler(async (req: AuthenticatedUser, res:
         }
 
     ])
-    console.log(mocks)
     if (!mocks) {
         return res.status(404).json({ message: "Mocks not found!!!" })
     }
@@ -221,7 +220,7 @@ export const submitMock = asyncHandler(async (req: Request, res: Response) => {
             return
         }
         user.mocksAttempted = user.mocksAttempted.filter((mock) => {
-            if (mock.mockId === mockId && mock.status === 'in_progress') {
+            if (String(mock.mockId) === mockId && mock.status === 'in_progress') {
                 mock.status = "completed";
                 mock.score = score;
             }

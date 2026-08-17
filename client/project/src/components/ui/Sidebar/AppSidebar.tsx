@@ -94,8 +94,8 @@ function AppSidebar({ userId }: any) {
                                                                 : ""
                                                         }
                                                     >
-                                                        <item.icon size={18} />
-                                                        <span>{item.title}</span>
+                                                        <item.icon size={24} />
+                                                        <span className='text-lg'>{item.title}</span>
                                                     </NavLink>
 
                                                 </SidebarMenuButton>

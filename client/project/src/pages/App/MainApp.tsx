@@ -11,7 +11,7 @@ function MainApp() {
             <AppSidebar userId={userId} />
             <div className='bg-zinc-100 min-h-screen w-full'>
                 <main>
-                    <SidebarTrigger />
+                    <SidebarTrigger/>
                     <Outlet />
                 </main>
             </div>

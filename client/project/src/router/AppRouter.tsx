@@ -9,6 +9,7 @@ const ScienceSection = lazy(() => import('@/pages/App/Science Section/ScienceSec
 const GeographySection = lazy(() => import('@/pages/App/Geography Section/GeographySection'))
 const Payment = lazy(() => import("@/pages/App/Payment/Payment"))
 const TestReview = lazy(() => import("@/pages/App/Test Review/TestReview"))
+const MainAppHome = lazy(() => import("@/pages/App/Home Page/Home"))
 
 import { Loader2 } from "lucide-react"
 
@@ -26,7 +27,7 @@ function AppRouter() {
                 <Route path="/" element={<Home />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/main-app/:userId" element={<MainApp />}>
-                    {/* <Route index element={<MainAppHome />} /> */}
+                    <Route index element={<MainAppHome />} />
                     <Route index path="science" element={<ScienceSection />} />
                     <Route path="geography" element={<GeographySection />} />
                 </Route>

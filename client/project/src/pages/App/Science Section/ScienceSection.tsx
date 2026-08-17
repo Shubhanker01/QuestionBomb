@@ -52,7 +52,7 @@ export default function ScienceSection() {
                             variant={selectedCategory === cat ? "default" : "outline"}
                             size="sm"
                             onClick={() => setSelectedCategory(cat)}
-                            className="rounded-full text-xs font-medium"
+                            className="rounded-full text-lg font-medium"
                         >
                             {cat}
                         </Button>

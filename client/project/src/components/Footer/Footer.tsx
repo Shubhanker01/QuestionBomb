@@ -1,5 +1,5 @@
 import { Button } from '../ui/button'
-import { ChevronLeft, ChevronRight, Send } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import type { FooterProps } from '@/types/question'
 
 function Footer({ currentIdx, setCurrentIdx, length }: FooterProps) {
@@ -26,10 +26,11 @@ function Footer({ currentIdx, setCurrentIdx, length }: FooterProps) {
                             <ChevronRight className="w-4 h-4" />
                         </Button>
                     ) : (
-                        <Button variant="default" className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
-                            Submit Test
-                            <Send className="w-4 h-4" />
-                        </Button>
+                        // <Button variant="default" className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+                        //     Submit Test
+                        //     <Send className="w-4 h-4" />
+                        // </Button>
+                        <div></div>
                     )}
                 </div>
             </footer>

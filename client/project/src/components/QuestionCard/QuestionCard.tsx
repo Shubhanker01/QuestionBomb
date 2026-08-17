@@ -27,8 +27,8 @@ function QuestionCard({ setSelectedAnswers, setMarkedForReview, currentQuestion,
 
 
     return (
-        <ScrollArea className="flex-1 p-6">
-            <div className="max-w-3xl mx-auto space-y-6">
+        <ScrollArea className="flex-1 p-3 overflow-auto">
+            <div className="max-w-4xl mx-auto space-y-3">
                 {/* Question Card */}
                 <Card className="border-border/60 shadow-sm">
                     <CardHeader className="pb-3">
